@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disease Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="hero">
+    <h1>🩺<b> DISEASE PREDICTION SYSTEM</b></h1>
+    <p>Select your symptoms and get instant health insights</p>
+</div>
+
+
+<div class="container">
+
+    <div class="card large">
+
+        <h2 class="section-title">Enter Your Symptoms</h2>
+
+        <form action="/predict" method="post" class="form">
+
+            <!-- Search -->
+            <input
+                type="text"
+                id="searchBox"
+                class="input big"
+                placeholder="Search symptoms like fever, cough, headache..."
+            >
+
+           
+            <div id="suggestions" class="suggestions"></div>
+
+    
+            <div id="selected" class="selected"></div>
+
+            <button type="submit" class="btn primary">
+                🔍 Predict Disease
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+const symptoms = {{ symptoms | tojson }};
+const searchBox = document.getElementById("searchBox");
+const suggestions = document.getElementById("suggestions");
+const selectedDiv = document.getElementById("selected");
+
+let selected = [];
+searchBox.addEventListener("input", function () {
+
+    const value = this.value.toLowerCase();
+    suggestions.innerHTML = "";
+
+    if (!value) return;
+
+    const filtered = symptoms.filter(s =>
+        s.toLowerCase().includes(value)
+    ).slice(0, 6);
+
+    filtered.forEach(symptom => {
+
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "suggestion-item";   // ✅ custom class
+        item.innerText = symptom;
+
+        item.onclick = () => addSymptom(symptom);
+
+        suggestions.appendChild(item);
+    });
+});
+
+function addSymptom(symptom) {
+
+    if (selected.includes(symptom)) return;
+
+    selected.push(symptom);
+
+    const badge = document.createElement("span");
+    badge.className = "tag";  
+    badge.innerHTML = symptom + " ✖";
+
+    badge.onclick = () => {
+        badge.remove();
+        document.getElementById(symptom).remove();
+    };
+
+    selectedDiv.appendChild(badge);
+
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "symptoms";
+    hidden.value = symptom;
+    hidden.id = symptom;
+
+    document.querySelector("form").appendChild(hidden);
+
+    searchBox.value = "";
+    suggestions.innerHTML = "";
+}
+</script>
+
+</body>
+</html>

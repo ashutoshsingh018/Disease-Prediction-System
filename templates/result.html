@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+    <h1 class="title">🩺 {{ result.Disease }}</h1>
+
+    <div class="center">
+        <span class="badge {{ result.Severity }}">
+           Disease Risk Category: {{ result.Severity }}
+        </span>
+    </div>
+
+    <!-- Confidence -->
+    <div class="confidence-box">
+        <label>Confidence</label>
+        <div class="progress">
+            <div class="bar" style="width: {{ result.Confidence }}%">
+                {{ result.Confidence }}%
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <h4>Description</h4>
+    <p>{{ result.Description }}</p>
+
+    <h4>Diet</h4>
+    <p>{{ result.Diet[1:-1].replace("'","") }}</p>
+
+    <h4>Medicines</h4>
+    <p>{{ result.Medicines[1:-1].replace("'","") }}</p>
+
+    <h4>Workout</h4>
+    <p>{{ result.Workout }}</p>
+
+    <h4>Precautions</h4>
+    <ul>
+        {% for p in result.Precautions[0] %}
+            <li>{{ p }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/" class="btn">🔙 Try Again</a>
+
+</div>
+</div>
+
+</body>
+</html>
